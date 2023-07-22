@@ -19,7 +19,6 @@ const Education = ({ formData, handleEducationChange, handleAddEducation, handle
                             value={education.universityName || ''}
                             onChange={(event) => handleEducationChange(index, event)}
                         />
-                        1
                         <label>City:</label>
                         <input
                             type="text"

@@ -32,6 +32,14 @@ const MainForm = () => {
         }));
     };
 
+    const handleInfoChange = (event) => {
+        const { name, value } = event.target;
+        setOtherInfo((prevInfo) => ({
+            ...prevInfo,
+            [name]: value,
+        }));
+    };
+
     const handleEducationChange = (index, event) => {
         const { name, value } = event.target;
         const updatedEducations = [...educations];
@@ -151,7 +159,7 @@ const MainForm = () => {
                     handleAddProject={handleAddProject}
                     handleRemoveProject={handleRemoveProject}
                 />
-                <OtherInfo formData={otherInfo} handleInputChange={handleInputChange} />
+                <OtherInfo formData={otherInfo} handleInputChange={handleInfoChange} />
                 <div className="submit-container">
                     <button type="submit" onClick={handleSubmit} className="submit-button">Submit</button>
                 </div>
