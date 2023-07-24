@@ -23,6 +23,8 @@ const MainForm = () => {
         skills: '',
         languages: '',
     })
+    
+    const [isFormValid, setIsFormValid] = useState(true);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -95,7 +97,7 @@ const MainForm = () => {
             prevWorkExperiences.filter((_, i) => i !== index)
         );
     };
-    
+
     const handleProjectChange = (index, event) => {
         const { name, value } = event.target;
         const updatedProjects = [...projects];
@@ -125,36 +127,52 @@ const MainForm = () => {
     };
     const handleSubmit = (e) => {
         e.preventDefault();
-        const data = {}
-        data.personalInfo = personalInfo
-        data.educations = educations
-        data.projects = projects
-        data.workExperiences = workExperiences
-        data.otherInfo = otherInfo
+        if (
+            !personalInfo.name ||
+            !personalInfo.email ||
+            !personalInfo.mobile ||
+            !personalInfo.linkedin ||
+            !personalInfo.city ||
+            !personalInfo.country ||
+            !otherInfo.skills ||
+            !otherInfo.languages
+        ) {
+            setIsFormValid(false);
+            console.log("Form is invalid")
+            return; 
+        }
+        const data = {
+            personalInfo,
+            educations,
+            projects,
+            workExperiences,
+            otherInfo,
+        };
         console.log(data);
-    }
+    };
     return (
         <div className="form-container">
             <img src={logo} alt="Logo" className="logo" />
             <p className="form-description">
                 The purpose of this Information Form is to understand your profile better. Please fill in the details with accuracy and try to avoid unnecessary information, only focus on the valuable parts of your experiences and mention key learnings and achievements.
             </p>
+            {isFormValid && <p></p>}
             <form onSubmit={handleSubmit}>
                 <PersonalInfo formData={personalInfo} handleInputChange={handleInputChange} />
                 <Education
-                    formData={{educations}}
+                    formData={{ educations }}
                     handleAddEducation={handleAddEducation}
                     handleRemoveEducation={handleRemoveEducation}
                     handleEducationChange={handleEducationChange}
                 />
                 <WorkExp
-                formData={{workExperiences}}
+                    formData={{ workExperiences }}
                     handleWorkExperienceChange={handleWorkExperienceChange}
                     handleAddWorkExperience={handleAddWorkExperience}
                     handleRemoveWorkExperience={handleRemoveWorkExperience}
                 />
                 <Projects
-                    formData={{projects}}
+                    formData={{ projects }}
                     handleProjectChange={handleProjectChange}
                     handleAddProject={handleAddProject}
                     handleRemoveProject={handleRemoveProject}
