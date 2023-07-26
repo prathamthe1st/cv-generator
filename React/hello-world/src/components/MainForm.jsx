@@ -6,8 +6,12 @@ import Education from './Education';
 import WorkExp from './WorkExp';
 import Projects from './Projects';
 import OtherInfo from './OtherInfo';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
-const MainForm = () => {
+
+const MainForm = ({ setResult }) => {
+    const navigate = useNavigate();
     const [personalInfo, setPersonalInfo] = useState({
         name: '',
         email: '',
@@ -23,7 +27,7 @@ const MainForm = () => {
         skills: '',
         languages: '',
     })
-    
+
     const [isFormValid, setIsFormValid] = useState(true);
 
     const handleInputChange = (event) => {
@@ -139,7 +143,7 @@ const MainForm = () => {
         ) {
             setIsFormValid(false);
             console.log("Form is invalid")
-            return; 
+            return;
         }
         const data = {
             personalInfo,
@@ -148,7 +152,16 @@ const MainForm = () => {
             workExperiences,
             otherInfo,
         };
-        console.log(data);
+        axios
+            .post("http://localhost:4000/cv", data, {})
+            .then((res) => {
+                if (res.data.message) {
+                    setResult(res.data.data);
+                    navigate("/cv");
+                    console.log(res.data);
+                }
+            })
+            .catch((err) => console.error(err));
     };
     return (
         <div className="form-container">

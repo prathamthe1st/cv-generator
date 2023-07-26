@@ -1,12 +1,20 @@
 import './App.css';
 import Form from './form'
 import MainForm from './components/MainForm';
+import React, { useState } from 'react';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import CV from './components/CV';
 function App() {
+  const [result, setResult] = useState({});
   return (
-    <div className="App">
-      {/* <Form /> */}
-      <MainForm />
-    </div>
+    <BrowserRouter>
+      <div className="App">
+        <Routes>
+          <Route path="/" element={<MainForm setResult={setResult} />} />
+          <Route path="/cv" element={<CV result={result} />} />
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
