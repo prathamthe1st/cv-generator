@@ -1,9 +1,8 @@
-import './App.css';
 import Form from './form'
 import MainForm from './components/MainForm';
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import CV from './components/CV';
+import CV from './components/CV/CV';
 function App() {
   const [result, setResult] = useState({});
   return (

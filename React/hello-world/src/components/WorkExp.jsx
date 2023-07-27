@@ -73,12 +73,12 @@ const WorkExp = ({
                             onChange={(event) => handleWorkExperienceChange(index, event)}
                         ></textarea>
 
-                        <button type='btn' onClick={() => handleRemoveWorkExperience(index)}>Delete</button>
+                        <button className='add-buttons' type='button' onClick={() => handleRemoveWorkExperience(index)}>Delete</button>
                     </div>
                 ))}
 
                 <div className="add-work-experience">
-                    <button type='btn' onClick={handleAddWorkExperience}>
+                    <button type='button' className='add-buttons' onClick={handleAddWorkExperience}>
                         Add Work Experience
                     </button>
                     {/* Show error messages if needed */}

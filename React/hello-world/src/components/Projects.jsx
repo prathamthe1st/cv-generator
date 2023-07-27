@@ -59,12 +59,12 @@ const Projects = ({ formData, handleProjectChange, handleAddProject, handleRemov
                                 onChange={(event) => handleProjectChange(index, event)}
                             ></textarea>
                         </div>
-                        <button onClick={() => handleRemoveProject(index)}>Delete</button>
+                        <button className='add-buttons' onClick={() => handleRemoveProject(index)}>Delete</button>
                     </>
                 ))}
             </div>
             <div className="add-project">
-                <button type='button' onClick={handleAddProject}>
+                <button type='button' className='add-buttons' onClick={handleAddProject}>
                     Add Project/ Extra-curricular experiences
                 </button>
             </div>

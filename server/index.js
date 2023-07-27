@@ -47,12 +47,10 @@ const generateID = () => Math.random().toString(36).substring(2, 10);
 */
 
 const configuration = new Configuration({
-	apiKey: "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",
+	apiKey: "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",
 });
 
 const openai = new OpenAIApi(configuration);
-
-const database = [];
 
 const ChatGPTFunction = async (text) => {
 	const response = await openai.createCompletion({
@@ -95,6 +93,32 @@ app.post("/cv", async (req, res) => {
 		otherInfo
 	} = req.body;
 
+
+	const workExperiencesText = async () => {
+		for (let i = 0; i < workExperiences.length; i++) {
+			console.log("Processing work experience:", workExperiences[i]);
+			console.log("Company name:", workExperiences[i].companyName);
+			console.log("Title position held:", workExperiences[i].titlePositionHeld);
+
+			let prompt1 = `I am writing a resume, I worked at  ${workExperiences[i].companyName} as a ${workExperiences[i].titlePositionHeld}  \n Can you write me 25 words enhancing my role in this company (in first person)?`;
+			let response1 = await ChatGPTFunction(prompt1);
+			console.log("Response from AI model:", response1);
+
+			// Update the workDescription of the original object in the array
+			workExperiences[i].workDescription = response1;
+		}
+	};
+	const projectsText = async () => {
+		for (let i = 0; i < projects.length; i++) {
+			let prompt2 = `I am writing a resume, I worked on  ${projects[i].title} project. ${projects[i].description}  \n Can you write me 25 words enhancing this project and its description (in first person)?`
+			let response2 = await ChatGPTFunction(prompt2)
+			projects[i].description = response2
+		}
+	};
+	workExperiencesText()
+	await Promise.all([workExperiencesText(), projectsText()]);
+	// projectsText()
+
 	const newEntry = {
 		id: generateID(),
 		personalInfo,
@@ -104,51 +128,11 @@ app.post("/cv", async (req, res) => {
 		otherInfo
 	};
 
-	// const prompt1 = `I am writing a CV  for myself, my details are \n name: ${fullName} \n role: ${currentPosition} (${currentLength} years). \n I write in the technologies: ${currentTechnologies}. Can you write a 50 words description for the top of the resume(first person writing)?`;
-
-	// // const prompt2 = `I am writing a resume, my details are \n name: ${fullName} \n role: ${currentPosition} (${currentLength} years). \n I write in the technolegies: ${currentTechnologies}. Can you write 5 points for a resume on what I am good at?`;
-
-	// const prompt2 = `Can you write 5 points for a resume on what I am good at?`;
-
-	// const remainderText = () => {
-	// 	let stringText = "";
-	// 	for (let i = 0; i < workArray.length; i++) {
-	// 		stringText += ` ${workArray[i].name} as a ${workArray[i].position}.`;
-	// 	}
-	// 	return stringText;
-	// };
-
-	// // const prompt3 = `I am writing a resume, my details are \n name: ${fullName} \n role: ${currentPosition} (${currentLength} years). \n During my years I worked at ${workArray.length
-	// // 	} companies. ${remainderText()} \n Can you write me 25 words for each company seperated in numbers of my succession in the company (in first person)?`;
-
-	// const prompt3 = `During my years I worked at ${workArray.length
-	// 	} companies. ${remainderText()} \n Can you write me 25 words for each company seperated in numbers of my succession in the company (in first person)?`;
-
-	// const objective = await ChatGPTFunction(prompt1);
-	// const keypoints = await ChatGPTFunction(prompt2);
-	// const jobResponsibilities = await ChatGPTFunction(prompt3);
-
-	// const chatgptData = { objective, keypoints, jobResponsibilities };
-	// const data = { ...newEntry, ...chatgptData };
-	// database.push(data);
-
 	res.json({
 		message: "Request successful!",
-		newEntry: newEntry,
+		data: newEntry
 	});
 });
-
-/*
-	?This code is an endpoint handler for the /cv/create route that handles the creation of a new CV. 
-	?It retrieves the necessary data from the request body, such as full name, current position, length, technologies, and work history. 
-	?It parses the work history into an array and generates unique identifiers for the new CV entry.
-
-	?The code then constructs prompts using the retrieved data and calls the ChatGPTFunction to generate descriptions for the CV. 
-	?The generated responses are assigned to the objective, keypoints, and jobResponsibilities variables.
-
-	?Finally, the code combines the generated data with the input data, stores it in the database array, 
-	?and sends a JSON response containing the created CV data, along with a success message.
-*/
 
 app.listen(PORT, () => {
 	console.log(`Server listening on ${PORT}`);

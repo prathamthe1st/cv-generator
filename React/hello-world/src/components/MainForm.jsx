@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import '../App.css'
+import '../form.css'
 import logo from '../assets/logo.png'
 import PersonalInfo from './PersonalInfo';
 import Education from './Education';
@@ -165,7 +165,10 @@ const MainForm = ({ setResult }) => {
     };
     return (
         <div className="form-container">
-            <img src={logo} alt="Logo" className="logo" />
+            <div className='img-container'>
+                <img src={logo} alt="Logo" className="logo" />
+            </div>
+
             <p className="form-description">
                 The purpose of this Information Form is to understand your profile better. Please fill in the details with accuracy and try to avoid unnecessary information, only focus on the valuable parts of your experiences and mention key learnings and achievements.
             </p>
@@ -192,7 +195,7 @@ const MainForm = ({ setResult }) => {
                 />
                 <OtherInfo formData={otherInfo} handleInputChange={handleInfoChange} />
                 <div className="submit-container">
-                    <button type="submit" onClick={handleSubmit} className="submit-button">Submit</button>
+                    <button type="submit" onClick={handleSubmit} className="add-buttons">Submit</button>
                 </div>
             </form>
         </div>

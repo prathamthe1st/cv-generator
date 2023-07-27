@@ -29,12 +29,10 @@
 # print(f'PDF successfully generated: {output_pdf}'
 
 
-
-
 import os
 from jinja2 import Environment, FileSystemLoader
 from docx import Document
-from docx.shared import Inches,Pt,Cm
+from docx.shared import Inches, Pt, Cm
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT, WD_TAB_ALIGNMENT, WD_TAB_LEADER
 from docx.enum.style import WD_STYLE_TYPE
 from html.parser import HTMLParser
@@ -105,46 +103,46 @@ mockCVData = [
             {
                 "degree": "Bachelor of Arts",
                 "major": "Women and Gender Studies",
-                "minor":"Machine learning",
+                "minor": "Machine learning",
                 "university": "UNIVERSITY OF WINNIPEG",
                 "location": "Winnipeg, Canada",
-                "gpa":3.0,
-                "startDate":2019,
-                "endDate":2022
+                "gpa": 3.0,
+                "startDate": 2019,
+                "endDate": 2022
             },
             {
                 "degree": "High school",
                 "major": "Science",
                 "university": "Ryan international School",
                 "location": "Mumbai,India",
-                "gpa":4.0,
-                "startDate":2007,
-                "endDate":2017
+                "gpa": 4.0,
+                "startDate": 2007,
+                "endDate": 2017
             }
         ],
         "languages": ["English", "Mandarin"],
         "certifications": [],
-        "projects": 
+        "projects":
         [
             {
-                "title":"Aiesec",
-                "startDate":2007,
-                "endDate":2017,
-                "location":"Mumbai",
-                "position":"Manager",
-                "points":[
+                "title": "Aiesec",
+                "startDate": 2007,
+                "endDate": 2017,
+                "location": "Mumbai",
+                "position": "Manager",
+                "points": [
                     "point1 hai ye",
                     "this is point 2",
                     "point 3"
                 ]
             },
             {
-                "title":"RIA",
-                "startDate":2002,
-                "endDate":2010,
-                "location":"Nagpur",
-                "position":"Intern",
-                "points":[
+                "title": "RIA",
+                "startDate": 2002,
+                "endDate": 2010,
+                "location": "Nagpur",
+                "position": "Intern",
+                "points": [
                     "Hii",
                     "Hello",
                     "How are you"
@@ -161,7 +159,8 @@ mockCVData = [
 
 
 env = Environment(loader=FileSystemLoader('.'))
-template = env.get_template('resume_template.html')
+template = env.get_template('dev/resume_template.html')
+
 
 def strip_tags(html):
     class MLStripper(HTMLParser):
@@ -180,23 +179,22 @@ def strip_tags(html):
     stripper.feed(html)
     return stripper.get_data()
 
-def create_word_document(cv_data,html_content, output_file):
+
+def create_word_document(cv_data, html_content, output_file):
     plain_text = strip_tags(html_content)
 
     document = Document()
     section = document.sections[0]
-    section.top_margin = Cm(0.3)  
+    section.top_margin = Cm(0.3)
     section.left_margin = Cm(1.0)
     section.right_margin = Cm(1.0)
     name_paragraph = document.add_paragraph()
     name_run = name_paragraph.add_run(cv_data['name'])
 
-   
     name_run.bold = True
 
     name_run.font.size = Pt(16)
 
-   
     name_paragraph.alignment = 1
     name_paragraph_format = name_paragraph.paragraph_format
     name_paragraph_format.space_after = Pt(1)
@@ -220,8 +218,6 @@ def create_word_document(cv_data,html_content, output_file):
     contact_info_paragraph_format = contact_info_paragraph.paragraph_format
     contact_info_paragraph_format.space_after = Pt(4)
 
-
-    
     education_title_paragraph = document.add_paragraph()
     education_title_run = education_title_paragraph.add_run("Education")
 
@@ -230,17 +226,18 @@ def create_word_document(cv_data,html_content, output_file):
     education_title_run.font.size = Pt(12)
 
     education_title_paragraph.alignment = 1
-    education_title_paragraph_format=education_title_paragraph.paragraph_format
-    education_title_paragraph_format.space_after=Pt(0)
+    education_title_paragraph_format = education_title_paragraph.paragraph_format
+    education_title_paragraph_format.space_after = Pt(0)
 
-
-    line_style = document.styles.add_style('HorizontalLine', WD_STYLE_TYPE.PARAGRAPH)
+    line_style = document.styles.add_style(
+        'HorizontalLine', WD_STYLE_TYPE.PARAGRAPH)
     line_style.font.underline = True
 
-    line_paragraph = document.add_paragraph("___________________________________________________________________________________________________________________", style='HorizontalLine')
-    line_paragraph_format=line_paragraph.paragraph_format
-    line_paragraph_format.space_after=Pt(-19)
-    
+    line_paragraph = document.add_paragraph(
+        "___________________________________________________________________________________________________________________", style='HorizontalLine')
+    line_paragraph_format = line_paragraph.paragraph_format
+    line_paragraph_format.space_after = Pt(19)
+
     # education_details_paragraph = document.add_paragraph()
     # education_details_paragraph.add_run(f"{cv_data['education'][0]['university']} - {cv_data['education'][0]['location']}")
 
@@ -264,29 +261,32 @@ def create_word_document(cv_data,html_content, output_file):
         # Adding the education details
         education_details_paragraph = document.add_paragraph()
         university_line = f"{education_entry['university']} - {education_entry['location']}"
-        education_details_paragraph.add_run(university_line).bold=True
+        education_details_paragraph.add_run(university_line).bold = True
 
         tab_stops = education_details_paragraph.paragraph_format.tab_stops
-        tab_stops.add_tab_stop(Inches(7.5), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.SPACES)  
-        education_details_paragraph.add_run("\t")  
-        education_details_paragraph.add_run(f"{education_entry['startDate']} - {education_entry['endDate']}")
+        tab_stops.add_tab_stop(
+            Inches(7.5), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.SPACES)
+        education_details_paragraph.add_run("\t")
+        education_details_paragraph.add_run(
+            f"{education_entry['startDate']} - {education_entry['endDate']}")
         education_details_paragraph_format = education_details_paragraph.paragraph_format
         education_details_paragraph_format.space_after = Pt(0)
 
         degree_gpa_paragraph = document.add_paragraph()
         degree_gpa_line = f"{education_entry['degree']} in {education_entry['major']} | GPA: {education_entry['gpa']:.2f}/5.00"
         degree_gpa_paragraph.add_run(degree_gpa_line)
-        degree_gpa_paragraph_format=degree_gpa_paragraph.paragraph_format
-        degree_gpa_paragraph_format.space_after=Pt(0)
+        degree_gpa_paragraph_format = degree_gpa_paragraph.paragraph_format
+        degree_gpa_paragraph_format.space_after = Pt(0)
 
         if 'minor' in education_entry:
             minor_paragraph = document.add_paragraph()
-            minor_paragraph.add_run(f"Minor: {education_entry['minor']}").bold = False
+            minor_paragraph.add_run(
+                f"Minor: {education_entry['minor']}").bold = False
             minor_paragraph.style = "List Bullet"
 
-
         experience_title_paragraph = document.add_paragraph()
-    experience_title_run = experience_title_paragraph.add_run("Professional Experience")
+    experience_title_run = experience_title_paragraph.add_run(
+        "Professional Experience")
 
     experience_title_run.bold = True
 
@@ -295,34 +295,39 @@ def create_word_document(cv_data,html_content, output_file):
     experience_title_paragraph.alignment = WD_PARAGRAPH_ALIGNMENT.CENTER
 
     experience_title_paragraph.paragraph_format.space_after = Pt(0)
-    experience_line_paragraph = document.add_paragraph("---------------------------------------------------------------------------", style='HorizontalLine')
+    experience_line_paragraph = document.add_paragraph(
+        "---------------------------------------------------------------------------", style='HorizontalLine')
 
     for experience_entry in cv_data['professionalExperience']:
         experience_details_paragraph = document.add_paragraph()
         experience_details_line = f"{experience_entry['company']} - {experience_entry['location']} "
-        experience_details_paragraph.add_run(experience_details_line).bold = True
-        experience_details_paragraph_format=experience_details_paragraph.paragraph_format
-        experience_details_paragraph_format.space_after=Pt(0)
+        experience_details_paragraph.add_run(
+            experience_details_line).bold = True
+        experience_details_paragraph_format = experience_details_paragraph.paragraph_format
+        experience_details_paragraph_format.space_after = Pt(0)
 
         tab_stops = experience_details_paragraph.paragraph_format.tab_stops
-        tab_stops.add_tab_stop(Inches(7.5), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.SPACES)  
-        experience_details_paragraph.add_run("\t")  
-        experience_details_paragraph.add_run(f"{experience_entry['startDate']} - {experience_entry['endDate']}")
-        
+        tab_stops.add_tab_stop(
+            Inches(7.5), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.SPACES)
+        experience_details_paragraph.add_run("\t")
+        experience_details_paragraph.add_run(
+            f"{experience_entry['startDate']} - {experience_entry['endDate']}")
+
         experience_title_line = experience_entry['title']
-        experience_title_paragraph = document.add_paragraph(experience_title_line)
-        experience_title_paragraph_format=experience_title_paragraph.paragraph_format
-        experience_title_paragraph_format.space_after=Pt(0)
+        experience_title_paragraph = document.add_paragraph(
+            experience_title_line)
+        experience_title_paragraph_format = experience_title_paragraph.paragraph_format
+        experience_title_paragraph_format.space_after = Pt(0)
 
         if 'points' in experience_entry:
             for point in experience_entry['points']:
                 points_paragraph = document.add_paragraph(point)
                 points_paragraph.style = 'List Bullet'
 
-
     # Adding the "Projects and Extra-Curricular Activities" title paragraph
     projects_title_paragraph = document.add_paragraph()
-    projects_title_run = projects_title_paragraph.add_run("Projects and Extra-Curricular Activities")
+    projects_title_run = projects_title_paragraph.add_run(
+        "Projects and Extra-Curricular Activities")
 
     # Set the title font to bold
     projects_title_run.bold = True
@@ -337,27 +342,30 @@ def create_word_document(cv_data,html_content, output_file):
     projects_title_paragraph.paragraph_format.space_after = Pt(0)
 
     # Add a paragraph with an underscore character and apply the custom style for horizontal line
-    projects_line_paragraph = document.add_paragraph("________________________________________________________________________________________________________", style='HorizontalLine')
+    projects_line_paragraph = document.add_paragraph(
+        "________________________________________________________________________________________________________", style='HorizontalLine')
 
     for project_entry in cv_data['projects']:
         # Adding the project details
         project_details_paragraph = document.add_paragraph()
         project_details_line = f"{project_entry['title']} - {project_entry['location']}"
-        project_details_paragraph.add_run(project_details_line).bold=True
-
+        project_details_paragraph.add_run(project_details_line).bold = True
 
         # Adjust the tab stop for right alignment based on the right margin
         tab_stops = project_details_paragraph.paragraph_format.tab_stops
-        tab_stops.add_tab_stop(Inches(7.5), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.SPACES)
+        tab_stops.add_tab_stop(
+            Inches(7.5), WD_TAB_ALIGNMENT.RIGHT, WD_TAB_LEADER.SPACES)
 
         # Add the start date and end date with right-aligned tab stops
-        project_details_paragraph.add_run("\t")  # Add a tab character for right alignment
-        project_details_paragraph.add_run(f"{project_entry['startDate']} - {project_entry['endDate']}")
+        # Add a tab character for right alignment
+        project_details_paragraph.add_run("\t")
+        project_details_paragraph.add_run(
+            f"{project_entry['startDate']} - {project_entry['endDate']}")
 
         # Adding the project title
         project_title_paragraph = document.add_paragraph()
-        project_title_run = project_title_paragraph.add_run(project_entry['position'])
-
+        project_title_run = project_title_paragraph.add_run(
+            project_entry['position'])
 
         # Set the font size for the title (e.g., set to 14 points)
         project_title_run.font.size = Pt(12)
@@ -370,9 +378,9 @@ def create_word_document(cv_data,html_content, output_file):
             bullet_point_paragraph = document.add_paragraph(style='ListBullet')
             bullet_point_paragraph.add_run(point)
 
-
     other_info_title_paragraph = document.add_paragraph()
-    other_info_title_run = other_info_title_paragraph.add_run("Other Information")
+    other_info_title_run = other_info_title_paragraph.add_run(
+        "Other Information")
 
     # Set the title font to bold
     other_info_title_run.bold = True
@@ -389,7 +397,8 @@ def create_word_document(cv_data,html_content, output_file):
     # Remove the space after the "Other Information" title paragraph
     other_info_title_paragraph.paragraph_format.space_after = Pt(0)
 
-    other_info_line_paragraph = document.add_paragraph("___", style='HorizontalLine')
+    other_info_line_paragraph = document.add_paragraph(
+        "___", style='HorizontalLine')
 
     skills = cv_data.get('skills', [])
     languages = cv_data.get('languages', [])
@@ -397,11 +406,12 @@ def create_word_document(cv_data,html_content, output_file):
     skills_languages_line = f"Skills: {', '.join(skills)} | Languages: {', '.join(languages)}"
     skills_languages_paragraph.add_run(skills_languages_line)
 
-
     document.save(output_file)
+
+
 rendered_cv = template.render(cv_data=mockCVData[0])
 
 output_file_path = 'output_cv3.docx'
-create_word_document(mockCVData[0],rendered_cv, output_file_path)
+create_word_document(mockCVData[0], rendered_cv, output_file_path)
 
 print(f"Word document '{output_file_path}' created successfully.")
