@@ -81,7 +81,6 @@ const WorkExp = ({
                     <button type='button' className='add-buttons' onClick={handleAddWorkExperience}>
                         Add Work Experience
                     </button>
-                    {/* Show error messages if needed */}
                 </div>
             </div>
         </>

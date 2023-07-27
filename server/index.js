@@ -12,6 +12,8 @@ app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 app.use(cors());
 
+require("dotenv").config();
+
 const generateID = () => Math.random().toString(36).substring(2, 10);
 
 /*
@@ -47,7 +49,7 @@ const generateID = () => Math.random().toString(36).substring(2, 10);
 */
 
 const configuration = new Configuration({
-	apiKey: "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",
+	apiKey: process.env.OPENAI_API_KEY,
 });
 
 const openai = new OpenAIApi(configuration);
