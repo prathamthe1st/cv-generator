@@ -68,6 +68,7 @@ input {
   border-radius: 5px;
   border: 1px solid #ccc;
   width: 80%;
+  color: black;
 }
 
 button {
@@ -185,6 +186,7 @@ button:hover {
   box-sizing: border-box;
   line-height: normal;
   resize: vertical; /* Allow vertical resizing of the textarea */
+  color:black;
 }
 
 .education-space,

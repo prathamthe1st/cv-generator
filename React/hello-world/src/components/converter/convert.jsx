@@ -5,7 +5,7 @@ import Hello from "./Hello";
 import { saveAs } from "file-saver";
 import { Packer } from "docx";
 import { experiences, education, skills, achievements } from "./cv-data";
-import DocumentCreator from "./cv-generator"; // Assuming cv-generator.js exports the DocumentCreator class
+import DocumentCreator from "../cv-generator"; // Assuming cv-generator.js exports the DocumentCreator class
 
 class Convert extends Component {
   constructor(props) {

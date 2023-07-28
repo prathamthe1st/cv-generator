@@ -1,9 +1,9 @@
 const { Configuration, OpenAIApi } = require("openai");
 const express = require("express");
-const multer = require("multer");
-const path = require("path");
+// const multer = require("multer");
+// const path = require("path");
 const cors = require("cors");
-const fs = require("fs");
+// const fs = require("fs");
 const app = express();
 const PORT = 4000;
 
@@ -102,7 +102,7 @@ app.post("/cv", async (req, res) => {
 			console.log("Company name:", workExperiences[i].companyName);
 			console.log("Title position held:", workExperiences[i].titlePositionHeld);
 
-			let prompt1 = `I am writing a resume, I worked at  ${workExperiences[i].companyName} as a ${workExperiences[i].titlePositionHeld}  \n Can you write me 25 words enhancing my role in this company (in first person)?`;
+			let prompt1 = `I am writing a resume, I worked at  ${workExperiences[i].companyName} as a ${workExperiences[i].titlePositionHeld}  \n Can you write me 3 points in brief enhancing my role in this company (in first person)?`;
 			let response1 = await ChatGPTFunction(prompt1);
 			console.log("Response from AI model:", response1);
 
@@ -112,7 +112,7 @@ app.post("/cv", async (req, res) => {
 	};
 	const projectsText = async () => {
 		for (let i = 0; i < projects.length; i++) {
-			let prompt2 = `I am writing a resume, I worked on  ${projects[i].title} project. ${projects[i].description}  \n Can you write me 25 words enhancing this project and its description (in first person)?`
+			let prompt2 = `I am writing a resume, I worked on  ${projects[i].title} project. ${projects[i].description}  \n Can you write me 1 point enhancing this project and its description (in first person)?`
 			let response2 = await ChatGPTFunction(prompt2)
 			projects[i].description = response2
 		}
