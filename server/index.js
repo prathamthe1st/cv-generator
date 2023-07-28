@@ -112,6 +112,7 @@ app.post("/cv", async (req, res) => {
 	};
 	const projectsText = async () => {
 		for (let i = 0; i < projects.length; i++) {
+			
 			let prompt2 = `I am writing a resume, I worked on  ${projects[i].title} project. ${projects[i].description}  \n Can you write me 1 point enhancing this project and its description (in first person)?`
 			let response2 = await ChatGPTFunction(prompt2)
 			projects[i].description = response2

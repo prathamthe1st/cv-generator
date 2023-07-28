@@ -295,52 +295,73 @@ class DocumentCreator {
             }),
             this.createContactInfo(personalInfo.mobile, personalInfo.linkedin, personalInfo.email),
 
-            this.createHeading("Education"),
-            // educations
-            //   .map(education => {
-            //     const arr = [];
-            //     arr.push(
-            //       this.createInstitutionHeader(
-            //         education.universityName,
-            //         `${education.startDate} - ${education.endDate}`
-            //       )
-            //     );
-            //     arr.push(
-            //       this.createRoleText(
-            //         `${education.relevantCourses} - ${education.degreeName}`
-            //       )
-            //     );
-            //     return arr;
-            //   })
-            //   .reduce((prev, curr) => prev.concat(curr), []),
+            this.createHeading("Education and Qualifications"),
+            ...educations
+              .map(education => {
+                const arr = [];
+                arr.push(
+                  this.createInstitutionHeader(
+                    education.universityName,
+                    `${education.startDate} - ${education.endDate}`
+                  )
+                );
+                arr.push(
+                  this.createRoleText(
+                    `${education.relevantCourses} - ${education.degreeName}`
+                  )
+                );
+                return arr;
+              })
+              .reduce((prev, curr) => prev.concat(curr), []),
 
-            // this.createHeading("Experience"),
-            // workExperiences
-            //   .map(position => {
-            //     const arr = [];
-            //     arr.push(
-            //       this.createInstitutionHeader(
-            //         position.companyName,
-            //         this.createPositionDateText(
-            //           position.startDate,
-            //           position.endDate,
-            //         )
-            //       )
-            //     );
-            //     arr.push(this.createRoleText(position.titlePositionHeld));
+            this.createHeading("Work Experience"),
 
-            //     const bulletPoints = this.splitParagraphIntoBullets(
-            //       position.workDescription
-            //     );
-            //     bulletPoints.forEach(bulletPoint => {
-            //       arr.push(this.createBullet(bulletPoint));
-            //     });
-            //     return arr;
-            //   })
-            //   .reduce((prev, curr) => prev.concat(curr), []),
+            ...workExperiences
+              .map(position => {
+                const arr = [];
+                arr.push(
+                  this.createInstitutionHeader(
+                    position.companyName,
+                    this.createPositionDateText(
+                      position.startDate,
+                      position.endDate,
+                    )
+                  )
+                );
+                arr.push(this.createRoleText(position.titlePositionHeld));
 
-            this.createSubHeading("Projects"),
-            ...this.createProjectsList(projects),
+                const bulletPoints = this.splitParagraphIntoBullets(
+                  position.workDescription
+                );
+                bulletPoints.forEach(bulletPoint => {
+                  arr.push(this.createBullet(bulletPoint));
+                });
+                return arr;
+              })
+              .reduce((prev, curr) => prev.concat(curr), []),
+
+            this.createHeading("Projects"),
+            ...projects
+              .map(project => {
+                const arr = [];
+                arr.push(
+                  this.createInstitutionHeader(
+                    project.title,
+                    project.date
+                  )
+                );
+                arr.push(this.createRoleText(project.position));
+
+                const bulletPoints = this.splitParagraphIntoBullets(
+                  project.description
+                );
+                bulletPoints.forEach(bulletPoint => {
+                  arr.push(this.createBullet(bulletPoint));
+                });
+                return arr;
+              })
+              .reduce((prev, curr) => prev.concat(curr), []),
+
             this.createSubHeading("Interests"),
             this.createInterests(
               "Programming, Technology, Music Production, Web Design, 3D Modelling, Dancing."
@@ -437,7 +458,7 @@ class DocumentCreator {
     return projects.map(
       project =>
         new Paragraph({
-          text: project.name,
+          text: project.title,
           bullet: {
             level: 0
           }
@@ -453,7 +474,7 @@ class DocumentCreator {
 
   splitParagraphIntoBullets(text) {
     if (text === null) return [];
-    return text.split("\n\n");
+    return text.split('\n').filter(item => item.trim() !== '').map(item => item.replace(/^\d+\. /, ''));
   }
 
   createPositionDateText(startDate, endDate) {
