@@ -1,7 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
 const express = require("express");
 // const multer = require("multer");
-// const path = require("path");
+const path = require("path");
 const cors = require("cors");
 // const fs = require("fs");
 const app = express();
@@ -12,9 +12,12 @@ app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 app.use(cors());
 
-require("dotenv").config();
+const envFilePath = path.resolve(__dirname, '..', '.env');
+
+require("dotenv").config({ path: envFilePath});
 
 const generateID = () => Math.random().toString(36).substring(2, 10);
+	
 
 /*
 	?So, when the generateID function is called, it generates a random number between 0 and 1, converts it to a base-36 string, 
