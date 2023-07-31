@@ -263,7 +263,7 @@ import {
 // const EMAIL = "docx@docx.com";
 
 class DocumentCreator {
-  create([personalInfo, workExperiences, educations, projects]) {
+  create([personalInfo, workExperiences, educations, projects,otherInfo]) {
     const document = new Document({
       sections: [
         {
@@ -280,17 +280,17 @@ class DocumentCreator {
             new Paragraph({
               text: "",
               spacing: {
-                before: 0, // No space before
-                after: 0,  // No space after
+                before: 0, 
+                after: 0,  
               },
             }),
             new Paragraph({
               text: personalInfo.name,
               heading: HeadingLevel.TITLE,
-              alignment: AlignmentType.CENTER, // Center the heading
+              alignment: AlignmentType.CENTER, 
               spacing: {
-                before: 0, // No space before
-                after: 0,  // No space after
+                before: 0, 
+                after: 0,  
               },
             }),
             this.createContactInfo(personalInfo.mobile, personalInfo.linkedin, personalInfo.email),
@@ -361,11 +361,14 @@ class DocumentCreator {
                 return arr;
               })
               .reduce((prev, curr) => prev.concat(curr), []),
+            
 
-            this.createSubHeading("Interests"),
-            this.createInterests(
-              "Programming, Technology, Music Production, Web Design, 3D Modelling, Dancing."
-            ),
+              this.createHeading("Skills and Languages"),
+              this.createSubHeading("Skills"),
+              this.createSkillList(otherInfo.skills),
+              this.createSubHeading("Languages"),
+              this.createLanguageList(otherInfo.languages),
+
           ]
         }
       ]
@@ -381,10 +384,6 @@ class DocumentCreator {
         new TextRun(
           `Mobile: ${phoneNumber} | LinkedIn: ${profileUrl} | Email: ${email}`
         ),
-        new TextRun({
-          text: "Address: 58 Elm Avenue, Kent ME4 6ER, UK",
-          break: 1
-        })
       ]
     });
   }
@@ -479,6 +478,20 @@ class DocumentCreator {
 
   createPositionDateText(startDate, endDate) {
     return `${startDate} - ${endDate}`;
+  }
+
+
+  createSkillList(skills) {
+    return new Paragraph({
+      children: [new TextRun(skills)]
+    });
+
+  }
+
+  createLanguageList(languages) {
+    return new Paragraph({
+      children: [new TextRun(languages)]
+    });
   }
 
   getMonthFromInt(value) {

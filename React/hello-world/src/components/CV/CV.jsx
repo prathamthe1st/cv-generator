@@ -12,6 +12,7 @@ const CV = ({ result }) => {
         console.log(result.workExperiences)
         console.log(result.educations)
         console.log(result.projects)
+        console.log(result.otherInfo.skills)
     })
 
     function generateDocx() {
@@ -20,7 +21,8 @@ const CV = ({ result }) => {
             result.personalInfo,
             result.workExperiences,
             result.educations,
-            result.projects
+            result.projects,
+            result.otherInfo
         ]);
 
         // Packer.toBlob(doc).then(blob => {
