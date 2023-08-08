@@ -50,19 +50,22 @@
               }),
 
 
-              this.createHeading("Education and Qualifications"),
+              this.createHeading("Education"),
               ...educations
                 .map(education => {
                   const arr = [];
                   arr.push(
                     this.createInstitutionHeader(
                       education.universityName,
-                      `${education.startDate} - ${education.endDate}`
+                      `${education.startDate} - ${education.endDate}`,
+                      `${education.city}, ${education.country}`
                     )
                   );
                   arr.push(
                     this.createRoleText(
-                      `${education.relevantCourses} - ${education.degreeName}`
+                      `Majors in ${education.degreeName},Honours in ${education.relevantCourses
+                      } | GPA: ${education.gpa}`,
+                      education.relevantCourses
                     )
                   );
                   return arr;
@@ -84,10 +87,9 @@
                   arr.push(
                     this.createInstitutionHeader(
                       position.companyName,
-                      this.createPositionDateText(
-                        position.startDate,
-                        position.endDate,
-                      )
+                      `${position.startDate} - ${position.endDate}`,
+                      `${position.city}, ${position.country}`
+                      
                     )
                   );
                   arr.push(this.createRoleText(position.titlePositionHeld));
@@ -116,7 +118,8 @@
                   arr.push(
                     this.createInstitutionHeader(
                       project.title,
-                      project.date
+                      project.date,
+                      `${project.city}, ${project.country}`
                     )
                   );
                   arr.push(this.createRoleText(project.position));
@@ -182,12 +185,13 @@
         heading: HeadingLevel.HEADING_2,
         size:32,
         spacing: {
-          after: 100, // Adjust the spacing value as needed (in twips - 1/20 of a point)
+          after: 100, 
         },
       });
     }
 
-    createInstitutionHeader(institutionName, dateText) {
+    createInstitutionHeader(institutionName, dateText, location) {
+      
       return new Paragraph({
         tabStops: [
           {
@@ -198,11 +202,17 @@
         children: [
           new TextRun({
             text: institutionName,
-            bold: true
+            bold: true,
+            size:24
+          }),
+          new TextRun({
+            text: `, ${location}`,
+            size:22
           }),
           new TextRun({
             text: `\t${dateText}`,
-            bold: true
+            bold: true,
+            size:22
           })
         ]
       });
@@ -214,7 +224,7 @@
           new TextRun({
             text: roleText,
             italics: true,
-            size:24
+            size:22
           })
         ]
       });
