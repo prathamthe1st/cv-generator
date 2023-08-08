@@ -1,11 +1,18 @@
 import React, { useEffect } from 'react'
 import './CV.css'
-import { saveAs } from "file-saver";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import logo from '../../assets/logo.png'
 import { Packer } from "docx";
-import DocumentCreator from "../cv-generator"; // Assuming cv-generator.js exports the DocumentCreator class
+import DocumentCreator from "../cv-generator"; 
+import { useNavigate } from 'react-router-dom';
 
 
 const CV = ({ result }) => {
+    const navigate = useNavigate();
+    const navigateHome = () => {
+        navigate('/');
+      };
     useEffect(() => {
         console.log(result)
         console.log(result.personalInfo)
@@ -17,6 +24,7 @@ const CV = ({ result }) => {
 
     function generateDocx() {
         const documentCreator = new DocumentCreator();
+        toast("Download started")
         const doc = documentCreator.create([
             result.personalInfo,
             result.workExperiences,
@@ -44,11 +52,22 @@ const CV = ({ result }) => {
     }
     return (
         <>
-            <div>
-                <p>
-                    Start editing to see some magic happen :)
-                    <button onClick={generateDocx}>Generate CV with docx!</button>
-                </p>
+            <div className='result'>
+                <div className='logo'>
+                    <img src={logo} alt="Logo" className="logo" />
+                </div>
+                <div>
+                    <p>
+                        Your Resume has been generated. Click the button to download your Resume
+                    </p>
+                </div>
+                <div className='download'>
+                    <button  onClick={generateDocx}>Download Resume</button>
+                    <ToastContainer/>
+                    <button onClick={navigateHome}>Create again</button>
+                </div>
+                
+
             </div>
         </>
     );
