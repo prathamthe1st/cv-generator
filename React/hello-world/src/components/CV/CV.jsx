@@ -66,8 +66,6 @@ const CV = ({ result }) => {
                     <ToastContainer/>
                     <button onClick={navigateHome}>Create again</button>
                 </div>
-                
-
             </div>
         </>
     );

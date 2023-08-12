@@ -14,10 +14,10 @@ app.use(cors());
 
 const envFilePath = path.resolve(__dirname, '..', '.env');
 
-require("dotenv").config({ path: envFilePath});
+require("dotenv").config({ path: envFilePath });
 
 const generateID = () => Math.random().toString(36).substring(2, 10);
-	
+
 
 /*
 	?So, when the generateID function is called, it generates a random number between 0 and 1, converts it to a base-36 string, 
@@ -62,7 +62,7 @@ const ChatGPTFunction = async (text) => {
 		model: "text-davinci-003",
 		prompt: text,
 		temperature: 0.6,
-		max_tokens: 250,
+		max_tokens: 140,
 		top_p: 1,
 		frequency_penalty: 1,
 		presence_penalty: 1,
@@ -98,33 +98,93 @@ app.post("/cv", async (req, res) => {
 		otherInfo
 	} = req.body;
 
-
 	const workExperiencesText = async () => {
 		for (let i = 0; i < workExperiences.length; i++) {
-			console.log("Processing work experience:", workExperiences[i]);
-			console.log("Company name:", workExperiences[i].companyName);
-			console.log("Title position held:", workExperiences[i].titlePositionHeld);
 
-			let prompt1 = `I am writing a resume, I worked at  ${workExperiences[i].companyName} as a ${workExperiences[i].titlePositionHeld}  \n Can you write me 3 points in brief enhancing my role in this company (in first person)?`;
-			let response1 = await ChatGPTFunction(prompt1);
-			console.log("Response from AI model:", response1);
+			let work_prompt1 = `I am writing a resume. I worked as a ${workExperiences[i].titlePositionHeld} at ${workExperiences[i].companyName}.${workExperiences[i].description}. I want you to act as a CV writing expert with immense industrial knowledge and do the following for my role: \n 
+			1. Quantify the experience wherever possible. \n
+			2. Go in-depth in the responsibilities and show a strong skillset and domain knowledge \n
+			3. Make the overall experience more impactful by using relevant names of tools, frameworks, processes, etc. \n
+			4. Use a maximum number of action words.`
 
-			// Update the workDescription of the original object in the array
-			workExperiences[i].workDescription = response1;
+			let work_response1 = await ChatGPTFunction(work_prompt1);
+			console.log(`Work Experience ${i+1} Response 1 from Model: `, work_response1)
+
+			let work_prompt2 = `${work_response1} \n\n I can see that you have still not implemented all the instructions.\n Please go over your response again and give me the best possible output making sure none of my instructions were missed. `
+			let work_response2 = await ChatGPTFunction(work_prompt2);
+
+			console.log(`Work Experience ${i+1} Response 2 from Model: `, work_response2)
+
+			workExperiences[i].workDescription = work_response2;
 		}
 	};
+
+	const createWorkExperience = async () => {
+		const userWorkPrompt = "Create a work experience for me. I work at Google as a Business Analyst"
+
+		const create_work_response1 = await ChatGPTFunction(userWorkPrompt);
+
+		console.log("Create Work Experience Response 1 from Model: ", create_work_response1)
+
+		let work_prompt1 = `${create_work_response1}\n\nThe experience you made up was generic.I want you to act as a CV writing expert with immense industrial knowledge and do the following for my role: 
+			1. Dont include the Company Name and Job Title in the description.\n
+			2. Quantify the experience wherever possible.\n
+			3. Go in-depth in the responsibilities and show a strong skillset and domain knowledge\n 
+			4. Make the overall experience more impactful by using relevant names of tools, frameworks, processes, etc.n\n
+			5. Use a maximum number of action words.`
+
+		let create_work_response2 = await ChatGPTFunction(work_prompt1);
+
+		console.log("Create Work Experience Response 2 from Model: ", create_work_response2)
+
+		// let work_prompt2 = `${create_work_response2} I can see that you have still not implemented all the instructions. Please go over your response again and give me the best possible output making sure none of my instructions were missed. `
+		let work_prompt2 = `${create_work_response2} Enhance this output by making it more impactful and following the given instructions. Dont increase the length of the output.`
+
+		let create_work_response3 = await ChatGPTFunction(work_prompt2);
+
+		console.log("Create Work Experience Response 3 from Model: ", create_work_response3)
+
+		// workExperiences[i].workDescription = create_work_response3;
+	};
+
 	const projectsText = async () => {
 		for (let i = 0; i < projects.length; i++) {
-			
-			let prompt2 = `I am writing a resume, I worked on  ${projects[i].title} project. ${projects[i].description}  \n Can you write me 1 point enhancing this project and its description (in first person)?`
-			let response2 = await ChatGPTFunction(prompt2)
-			projects[i].description = response2
-		}
-	};
-	workExperiencesText()
-	await Promise.all([workExperiencesText(), projectsText()]);
-	// projectsText()
+			console.log("Project ", i + 1, " : ", projects[i].title)
+			let project_prompt1 = `I am writing a resume. I made a ${projects[i].title}. ${projects[i].description}. By acting as a CV writing expert with immense industrial knowledge and do the following for my project: \n
+			1. Quantify the project wherever possible. \n
+			2. Use more action keywords\n
+			3. Make a mention of any relevant tools and frameworks if necessary.\n
+			4. Add the impactful points at the start itself and highlight specific skills.`
 
+			let project_response1 = await ChatGPTFunction(project_prompt1)
+			console.log(`Project ${i+1} Response 1 from Model: `, project_response1)
+
+			let project_prompt2 = `${project_response1} The response can be made better. Please follow all the instructions and give me the best quality output.`
+			let project_response2 = await ChatGPTFunction(project_prompt2);
+			console.log(`Project ${i+1} Response 2 from Model: `, project_response2)
+
+			projects[i].description = project_response2;
+		} 
+	};
+	const createProject = async () => {
+		const userProjectPrompt = "Create a project for me. I made a project on Machine Learning"
+		const create_project_response1 = await ChatGPTFunction(userProjectPrompt);
+
+		console.log("Response 1 from Model: ", create_project_response1)
+
+		let project_prompt1 = `${create_project_response1}\n\nThe output you made up was generic. Please act as a CV writing expert with immense industrial knowledge to personalize it and follow the following instructions: 
+		1. Dont include the Project Name in the description.
+		2. Quantify the experience wherever possible. 
+		3. Use more action keywords
+		4. Add the impactful points at the start itself and highlight specific skills. 
+		5. Make a mention of any relevant tools and frameworks if necessary.`	
+		
+		let create_project_response2 = await ChatGPTFunction(project_prompt1);
+		console.log("Response 2 from Model: ", create_project_response2)
+	};
+
+	await Promise.all([workExperiencesText(), projectsText()]);
+	// await Promise.all([workExperiencesText(), projectsText(), createWorkExperience(), createProject()]);
 	const newEntry = {
 		id: generateID(),
 		personalInfo,
