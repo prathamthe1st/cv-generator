@@ -152,7 +152,7 @@ app.post("/cv", async (req, res) => {
 		console.log("Projects is Running")
 		for (let i = 0; i < projects.length; i++) {
 			console.log("Project ", i + 1, " : ", projects[i].title)
-			let project_prompt1 = `I am writing a resume. I made a ${projects[i].title} when my role was a ${projects[i].position}. ${projects[i].description}. Act as a CV writing expert with immense industrial knowledge and provide 4 points while following the instructions below: \n
+			let project_prompt1 = `I am writing a resume. I made a ${projects[i].title} when my role was a ${projects[i].position}. ${projects[i].description}.Provide 4 impactful points as a CV writing expert with immense industrial knowledge while following the instructions below: \n
 			1. Quantify the project wherever possible. \n
 			2. Use more action keywords\n
 			3. Make a mention of any relevant tools and frameworks if necessary.\n
