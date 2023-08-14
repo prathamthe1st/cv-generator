@@ -57,12 +57,24 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
-const ChatGPTFunction = async (text) => {
+const WorkGPTFunction = async (text) => {
 	const response = await openai.createCompletion({
 		model: "text-davinci-003",
 		prompt: text,
 		temperature: 0.5,
 		max_tokens: 160,
+		top_p: 1,
+		frequency_penalty: 1,
+		presence_penalty: 1,
+	});
+	return response.data.choices[0].text;
+};
+const ProjectGPTFunction = async (text) => {
+	const response = await openai.createCompletion({
+		model: "text-davinci-003",
+		prompt: text,
+		temperature: 0.5,
+		max_tokens: 100,
 		top_p: 1,
 		frequency_penalty: 1,
 		presence_penalty: 1,
@@ -108,11 +120,11 @@ app.post("/cv", async (req, res) => {
 			3. Make the overall experience more impactful by using relevant names of tools, frameworks, processes, etc. \n
 			4. Use a maximum number of action words.`
 
-			let work_response1 = await ChatGPTFunction(work_prompt1);
+			let work_response1 = await WorkGPTFunction(work_prompt1);
 			console.log(`Work Experience ${i+1} Response 1 from Model: `, work_response1)
 
 			let work_prompt2 = `${work_response1}\n\n Enhance these 4 points but dont increase the word count.`
-			let work_response2 = await ChatGPTFunction(work_prompt2);
+			let work_response2 = await WorkGPTFunction(work_prompt2);
 
 			console.log(`Work Experience ${i+1} Response 2 from Model: `, work_response2)
 
@@ -123,7 +135,7 @@ app.post("/cv", async (req, res) => {
 	const createWorkExperience = async () => {
 		const userWorkPrompt = "Create a work experience for me. I work at Google as a Business Analyst"
 
-		const create_work_response1 = await ChatGPTFunction(userWorkPrompt);
+		const create_work_response1 = await WorkGPTFunction(userWorkPrompt);
 
 		console.log("Create Work Experience Response 1 from Model: ", create_work_response1)
 
@@ -134,14 +146,14 @@ app.post("/cv", async (req, res) => {
 			4. Make the overall experience more impactful by using relevant names of tools, frameworks, processes, etc.n\n
 			5. Use a maximum number of action words.`
 
-		let create_work_response2 = await ChatGPTFunction(work_prompt1);
+		let create_work_response2 = await WorkGPTFunction(work_prompt1);
 
 		console.log("Create Work Experience Response 2 from Model: ", create_work_response2)
 
 		// let work_prompt2 = `${create_work_response2} I can see that you have still not implemented all the instructions. Please go over your response again and give me the best possible output making sure none of my instructions were missed. `
 		let work_prompt2 = `${create_work_response2} Enhance these 4 points and dont increase the word count.`
 
-		let create_work_response3 = await ChatGPTFunction(work_prompt2);
+		let create_work_response3 = await WorkGPTFunction(work_prompt2);
 
 		console.log("Create Work Experience Response 3 from Model: ", create_work_response3)
 
@@ -152,17 +164,17 @@ app.post("/cv", async (req, res) => {
 		console.log("Projects is Running")
 		for (let i = 0; i < projects.length; i++) {
 			console.log("Project ", i + 1, " : ", projects[i].title)
-			let project_prompt1 = `I am writing a resume. I made a ${projects[i].title} when my role was a ${projects[i].position}. ${projects[i].description}.Provide 4 impactful points as a CV writing expert with immense industrial knowledge while following the instructions below: \n
+			let project_prompt1 = `I am writing a resume. I made a ${projects[i].title} when my role was a ${projects[i].position}. ${projects[i].description}.Provide 2 impactful points as a CV writing expert with immense industrial knowledge while following the instructions below: \n
 			1. Quantify the project wherever possible. \n
 			2. Use more action keywords\n
 			3. Make a mention of any relevant tools and frameworks if necessary.\n
 			4. Add the impactful points at the start itself and highlight specific skills.`
 
-			let project_response1 = await ChatGPTFunction(project_prompt1)
+			let project_response1 = await ProjectGPTFunction(project_prompt1)
 			console.log(`Project ${i+1} Response 1 from Model: `, project_response1)
 
-			let project_prompt2 = `${project_response1} \n\n Enhance these 4 points and dont increase the word count.`
-			let project_response2 = await ChatGPTFunction(project_prompt2);
+			let project_prompt2 = `${project_response1} \n\n Enhance these 2 points and dont increase the word count.`
+			let project_response2 = await ProjectGPTFunction(project_prompt2);
 			console.log(`Project ${i+1} Response 2 from Model: `, project_response2)
 
 			projects[i].description = project_response2;
@@ -170,7 +182,7 @@ app.post("/cv", async (req, res) => {
 	};
 	const createProject = async () => {
 		const userProjectPrompt = "Create a project for me. I made a project on Machine Learning"
-		const create_project_response1 = await ChatGPTFunction(userProjectPrompt);
+		const create_project_response1 = await ProjectGPTFunction(userProjectPrompt);
 
 		console.log("Response 1 from Model: ", create_project_response1)
 
@@ -181,7 +193,7 @@ app.post("/cv", async (req, res) => {
 		4. Add the impactful points at the start itself and highlight specific skills. 
 		5. Make a mention of any relevant tools and frameworks if necessary.`	
 		
-		let create_project_response2 = await ChatGPTFunction(create_project_prompt1);
+		let create_project_response2 = await ProjectGPTFunction(create_project_prompt1);
 		console.log("Response 2 from Model: ", create_project_response2)
 	};
 
