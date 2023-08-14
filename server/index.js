@@ -61,8 +61,8 @@ const ChatGPTFunction = async (text) => {
 	const response = await openai.createCompletion({
 		model: "text-davinci-003",
 		prompt: text,
-		temperature: 0.6,
-		max_tokens: 140,
+		temperature: 0.5,
+		max_tokens: 160,
 		top_p: 1,
 		frequency_penalty: 1,
 		presence_penalty: 1,
@@ -99,9 +99,10 @@ app.post("/cv", async (req, res) => {
 	} = req.body;
 
 	const workExperiencesText = async () => {
+		console.log("Work Ex is Running")
 		for (let i = 0; i < workExperiences.length; i++) {
 
-			let work_prompt1 = `I am writing a resume. I worked as a ${workExperiences[i].titlePositionHeld} at ${workExperiences[i].companyName}.${workExperiences[i].description}. I want you to act as a CV writing expert with immense industrial knowledge and do the following for my role: \n 
+			let work_prompt1 = `I am writing a resume. I worked as a ${workExperiences[i].titlePositionHeld} at ${workExperiences[i].companyName}.${workExperiences[i].description}. I want you to act as a CV writing expert with immense industrial knowledge and provide 4 impactful points for the description of my role while following the instructions below:\n 
 			1. Quantify the experience wherever possible. \n
 			2. Go in-depth in the responsibilities and show a strong skillset and domain knowledge \n
 			3. Make the overall experience more impactful by using relevant names of tools, frameworks, processes, etc. \n
@@ -110,7 +111,7 @@ app.post("/cv", async (req, res) => {
 			let work_response1 = await ChatGPTFunction(work_prompt1);
 			console.log(`Work Experience ${i+1} Response 1 from Model: `, work_response1)
 
-			let work_prompt2 = `${work_response1} \n\n I can see that you have still not implemented all the instructions.\n Please go over your response again and give me the best possible output making sure none of my instructions were missed. `
+			let work_prompt2 = `${work_response1}\n\n Enhance these 4 points but dont increase the word count.`
 			let work_response2 = await ChatGPTFunction(work_prompt2);
 
 			console.log(`Work Experience ${i+1} Response 2 from Model: `, work_response2)
@@ -126,7 +127,7 @@ app.post("/cv", async (req, res) => {
 
 		console.log("Create Work Experience Response 1 from Model: ", create_work_response1)
 
-		let work_prompt1 = `${create_work_response1}\n\nThe experience you made up was generic.I want you to act as a CV writing expert with immense industrial knowledge and do the following for my role: 
+		let work_prompt1 = `${create_work_response1}\n\nThe experience you made up was generic.I want you to act as a CV writing expert with immense industrial knowledge and provide 4 points while following the instructions below:
 			1. Dont include the Company Name and Job Title in the description.\n
 			2. Quantify the experience wherever possible.\n
 			3. Go in-depth in the responsibilities and show a strong skillset and domain knowledge\n 
@@ -138,7 +139,7 @@ app.post("/cv", async (req, res) => {
 		console.log("Create Work Experience Response 2 from Model: ", create_work_response2)
 
 		// let work_prompt2 = `${create_work_response2} I can see that you have still not implemented all the instructions. Please go over your response again and give me the best possible output making sure none of my instructions were missed. `
-		let work_prompt2 = `${create_work_response2} Enhance this output by making it more impactful and following the given instructions. Dont increase the length of the output.`
+		let work_prompt2 = `${create_work_response2} Enhance these 4 points and dont increase the word count.`
 
 		let create_work_response3 = await ChatGPTFunction(work_prompt2);
 
@@ -148,9 +149,10 @@ app.post("/cv", async (req, res) => {
 	};
 
 	const projectsText = async () => {
+		console.log("Projects is Running")
 		for (let i = 0; i < projects.length; i++) {
 			console.log("Project ", i + 1, " : ", projects[i].title)
-			let project_prompt1 = `I am writing a resume. I made a ${projects[i].title}. ${projects[i].description}. By acting as a CV writing expert with immense industrial knowledge and do the following for my project: \n
+			let project_prompt1 = `I am writing a resume. I made a ${projects[i].title} when my role was a ${projects[i].position}. ${projects[i].description}. Act as a CV writing expert with immense industrial knowledge and provide 4 points while following the instructions below: \n
 			1. Quantify the project wherever possible. \n
 			2. Use more action keywords\n
 			3. Make a mention of any relevant tools and frameworks if necessary.\n
@@ -159,7 +161,7 @@ app.post("/cv", async (req, res) => {
 			let project_response1 = await ChatGPTFunction(project_prompt1)
 			console.log(`Project ${i+1} Response 1 from Model: `, project_response1)
 
-			let project_prompt2 = `${project_response1} The response can be made better. Please follow all the instructions and give me the best quality output.`
+			let project_prompt2 = `${project_response1} \n\n Enhance these 4 points and dont increase the word count.`
 			let project_response2 = await ChatGPTFunction(project_prompt2);
 			console.log(`Project ${i+1} Response 2 from Model: `, project_response2)
 
@@ -172,19 +174,20 @@ app.post("/cv", async (req, res) => {
 
 		console.log("Response 1 from Model: ", create_project_response1)
 
-		let project_prompt1 = `${create_project_response1}\n\nThe output you made up was generic. Please act as a CV writing expert with immense industrial knowledge to personalize it and follow the following instructions: 
+		let create_project_prompt1 = `${create_project_response1}\n\nThe output you made up was generic. Please act as a CV writing expert with immense industrial knowledge to personalize it and follow the following instructions: 
 		1. Dont include the Project Name in the description.
 		2. Quantify the experience wherever possible. 
 		3. Use more action keywords
 		4. Add the impactful points at the start itself and highlight specific skills. 
 		5. Make a mention of any relevant tools and frameworks if necessary.`	
 		
-		let create_project_response2 = await ChatGPTFunction(project_prompt1);
+		let create_project_response2 = await ChatGPTFunction(create_project_prompt1);
 		console.log("Response 2 from Model: ", create_project_response2)
 	};
 
 	await Promise.all([workExperiencesText(), projectsText()]);
 	// await Promise.all([workExperiencesText(), projectsText(), createWorkExperience(), createProject()]);
+
 	const newEntry = {
 		id: generateID(),
 		personalInfo,
