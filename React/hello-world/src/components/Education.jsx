@@ -75,7 +75,7 @@ const Education = ({ formData, handleEducationChange, handleAddEducation, handle
 
                         />
 
-                        <button className='add-buttons' onClick={() => handleRemoveEducation(index)}>Delete</button>
+                        <button className='remove-buttons' onClick={() => handleRemoveEducation(index)}>Remove Education</button>
                     </div>
                 ))}
                 <div className="add-education">

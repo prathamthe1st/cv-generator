@@ -1,14 +1,15 @@
 import React from 'react';
 import '../form.css';
 
-const Projects = ({ formData, handleProjectChange, handleAddProject, handleRemoveProject }) => {
+const Projects = ({ formData1, formData2, handleProjectChange, handleAddProject, handleRemoveProject, handleAddCreateProject, handleRemoveCreateProject, handleCreateProjectChange }) => {
+    console.log(formData2)
     return (
         <>
             <div className="projects">
                 <h2 className="group-heading">
                     <span className="label">D</span> Projects & Extra-curricular Experiences
                 </h2>
-                {formData.projects.map((project, index) => (
+                {formData1.projects.map((project, index) => (
                     <>
                         <div key={index}>
                             {index > 0 && <div className="project-space" />}
@@ -62,11 +63,29 @@ const Projects = ({ formData, handleProjectChange, handleAddProject, handleRemov
                         <button className='add-buttons' onClick={() => handleRemoveProject(index)}>Delete</button>
                     </>
                 ))}
-            </div>
-            <div className="add-project">
-                <button type='button' className='add-buttons' onClick={handleAddProject}>
-                    Add Project/ Extra-curricular experiences
-                </button>
+                {
+                    formData2.createProject.map((project1, index) => (
+                        <>
+                            <label>{`Your Prompt ${index+1}:`}</label>
+                            <textarea
+                                name="userPrompt"
+                                value={project1.userPrompt || ''}
+                                onChange={(event) => handleCreateProjectChange(index, event)}
+                            ></textarea>
+                            <button className='remove-buttons' onClick={() => handleRemoveCreateProject(index)}>Delete Created Project</button>
+                        </>
+                    ))
+                }
+
+
+                <div className="add-project">
+                    <button type='button' className='add-buttons' onClick={handleAddProject}>
+                        Add Project
+                    </button>
+                    <button type='button' className='add-buttons' onClick={handleAddCreateProject}>
+                        Create Project
+                    </button>
+                </div>
             </div>
         </>
     );

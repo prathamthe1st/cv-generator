@@ -23,10 +23,13 @@ const MainForm = ({ setResult }) => {
     const [educations, setEducations] = useState([])
     const [workExperiences, setWorkExperiences] = useState([])
     const [projects, setProjects] = useState([])
+    const [createExp, setCreateExp] = useState([])
+    const [createProject, setCreateProject] = useState([])
     const [otherInfo, setOtherInfo] = useState({
         skills: '',
         languages: '',
     })
+
 
     const [isFormValid, setIsFormValid] = useState(true);
 
@@ -64,12 +67,13 @@ const MainForm = ({ setResult }) => {
             gpa: '',
             relevantCourses: '',
         }]);
-
     const handleRemoveEducation = (index) => {
         setEducations((prevEducations) =>
             prevEducations.filter((_, i) => i !== index)
         );
     };
+
+
 
     const handleWorkExperienceChange = (index, event) => {
         const { name, value } = event.target;
@@ -129,6 +133,55 @@ const MainForm = ({ setResult }) => {
             prevProjects.filter((_, i) => i !== index)
         );
     };
+
+    const handleCreateExpChange = (index, event) => {
+        const { name, value } = event.target;
+        const updatedCreateExp = [...createExp];
+        updatedCreateExp[index][name] = value;
+        setCreateExp(updatedCreateExp);
+    }
+
+    const handleCreateProjectChange = (index, event) => {
+        const { name, value } = event.target;
+        const updatedCreateProject = [...createProject];
+        updatedCreateProject[index][name] = value;
+        setCreateProject(updatedCreateProject);
+    }
+
+    const handleAddCreateExp = () => {
+        setCreateExp([...createExp, {
+            id: createExp.length + 1,
+            userPrompt: '',
+        }]);
+        console.log(createExp)
+    }
+
+
+    const handleRemoveCreateExp = (index) => {
+        setCreateExp((prevEducations) =>
+            prevEducations.filter((_, i) => i !== index)
+        );
+        console.log(createExp)
+    };
+
+
+    const handleAddCreateProject = () => {
+        setCreateProject((prevProjects) => [
+            ...prevProjects,
+            {
+                id: prevProjects.length + 1,
+                userPrompt: '',
+            },
+        ]);
+        console.log(createProject)
+    }
+
+    const handleRemoveCreateProject = (index) => {
+        setCreateProject((prevProjects) =>
+            prevProjects.filter((_, i) => i !== index)
+        );
+    }
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (
@@ -151,6 +204,8 @@ const MainForm = ({ setResult }) => {
             projects,
             workExperiences,
             otherInfo,
+            createExp,
+            createProject
         };
         axios
             .post("http://localhost:4000/cv", data, {})
@@ -182,16 +237,24 @@ const MainForm = ({ setResult }) => {
                     handleEducationChange={handleEducationChange}
                 />
                 <WorkExp
-                    formData={{ workExperiences }}
+                    formData1={{ workExperiences }}
+                    formData2={{ createExp }}
                     handleWorkExperienceChange={handleWorkExperienceChange}
                     handleAddWorkExperience={handleAddWorkExperience}
                     handleRemoveWorkExperience={handleRemoveWorkExperience}
+                    handleAddCreateExp={handleAddCreateExp}
+                    handleRemoveCreateExp={handleRemoveCreateExp}
+                    handleCreateExpChange={handleCreateExpChange}
                 />
                 <Projects
-                    formData={{ projects }}
+                    formData1={{ projects }}
+                    formData2={{ createProject }}
                     handleProjectChange={handleProjectChange}
                     handleAddProject={handleAddProject}
                     handleRemoveProject={handleRemoveProject}
+                    handleCreateProjectChange={handleCreateProjectChange}
+                    handleAddCreateProject={handleAddCreateProject}
+                    handleRemoveCreateProject={handleRemoveCreateProject}
                 />
                 <OtherInfo formData={otherInfo} handleInputChange={handleInfoChange} />
                 <div className="submit-container">

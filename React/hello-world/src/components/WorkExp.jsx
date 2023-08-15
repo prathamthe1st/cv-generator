@@ -2,10 +2,14 @@ import React from 'react';
 import '../form.css';
 
 const WorkExp = ({
-    formData,
+    formData1,
+    formData2,
     handleAddWorkExperience,
     handleWorkExperienceChange,
     handleRemoveWorkExperience,
+    handleAddCreateExp,
+    handleRemoveCreateExp,
+    handleCreateExpChange,
 }) => {
 
     return (
@@ -14,7 +18,7 @@ const WorkExp = ({
                 <h2 className="group-heading">
                     <span className="label">C</span> Work Experience
                 </h2>
-                {formData.workExperiences.map((experience, index) => (
+                {formData1.workExperiences.map((experience, index) => (
                     <div key={experience.id}>
                         {index > 0 && <div className="work-experience-space" />}
                         <h3 className="work-experience-heading">Work Experience {index + 1}</h3>
@@ -73,13 +77,29 @@ const WorkExp = ({
                             onChange={(event) => handleWorkExperienceChange(index, event)}
                         ></textarea>
 
-                        <button className='add-buttons' type='button' onClick={() => handleRemoveWorkExperience(index)}>Delete</button>
+                        <button className='remove-buttons' type='button' onClick={() => handleRemoveWorkExperience(index)}>Remove Experience</button>
                     </div>
                 ))}
+                {
+                    formData2.createExp.map((exp1, index) => (
+                        <div key={index}>
+                            <label>{`Your Prompt ${index+1}:`}</label>
+                            <textarea
+                                name="userPrompt"
+                                value={exp1.userPrompt || ''}
+                                onChange={(event) => handleCreateExpChange(index, event)}
+                            ></textarea>
+                            <button className='remove-buttons' onClick={() => handleRemoveCreateExp(index)}>Remove Created Experience</button>
+                        </div>
+                    ))
+                }
 
                 <div className="add-work-experience">
                     <button type='button' className='add-buttons' onClick={handleAddWorkExperience}>
                         Add Work Experience
+                    </button>
+                    <button className='add-buttons' type='button' onClick={handleAddCreateExp}>
+                        Create Work Experience
                     </button>
                 </div>
             </div>

@@ -211,6 +211,11 @@ button:hover {
 
 .add-buttons {
   background-color: #0681e6; /* Set the background color for the headings */
+  margin: 20px;
+}
+.remove-buttons {
+  background-color: #FF0000; /* Set the background color for the headings */
+  margin: 20px;
 }
 
 .pre-filled-text-container {

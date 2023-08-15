@@ -107,7 +107,9 @@ app.post("/cv", async (req, res) => {
 		educations,
 		workExperiences,
 		projects,
-		otherInfo
+		otherInfo,
+		createExp,
+		createProj,
 	} = req.body;
 
 	const workExperiencesText = async () => {
