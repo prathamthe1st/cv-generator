@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import '../form.css'
 import logo from '../assets/logo.png'
 import PersonalInfo from './PersonalInfo';
@@ -67,13 +67,12 @@ const MainForm = ({ setResult }) => {
             gpa: '',
             relevantCourses: '',
         }]);
+        
     const handleRemoveEducation = (index) => {
         setEducations((prevEducations) =>
             prevEducations.filter((_, i) => i !== index)
         );
     };
-
-
 
     const handleWorkExperienceChange = (index, event) => {
         const { name, value } = event.target;
@@ -81,8 +80,6 @@ const MainForm = ({ setResult }) => {
         updatedWorkExperiences[index][name] = value;
         setWorkExperiences(updatedWorkExperiences);
     };
-
-    // Function for handling changes in project fields
 
     const handleAddWorkExperience = () => {
         setWorkExperiences((prevWorkExperiences) => [
@@ -149,11 +146,11 @@ const MainForm = ({ setResult }) => {
     }
 
     const handleAddCreateExp = () => {
+        // console.log(createExp.length)
         setCreateExp([...createExp, {
             id: createExp.length + 1,
             userPrompt: '',
         }]);
-        console.log(createExp)
     }
 
 
@@ -161,7 +158,6 @@ const MainForm = ({ setResult }) => {
         setCreateExp((prevEducations) =>
             prevEducations.filter((_, i) => i !== index)
         );
-        console.log(createExp)
     };
 
 
@@ -173,7 +169,6 @@ const MainForm = ({ setResult }) => {
                 userPrompt: '',
             },
         ]);
-        console.log(createProject)
     }
 
     const handleRemoveCreateProject = (index) => {
@@ -181,6 +176,11 @@ const MainForm = ({ setResult }) => {
             prevProjects.filter((_, i) => i !== index)
         );
     }
+
+    useEffect(() => {
+        console.log(createExp)
+        console.log(createProject)
+    })
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -190,9 +190,7 @@ const MainForm = ({ setResult }) => {
             !personalInfo.mobile ||
             !personalInfo.linkedin ||
             !personalInfo.city ||
-            !personalInfo.country ||
-            !otherInfo.skills ||
-            !otherInfo.languages
+            !personalInfo.country
         ) {
             setIsFormValid(false);
             console.log("Form is invalid")

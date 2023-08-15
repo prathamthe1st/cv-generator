@@ -82,7 +82,7 @@ const WorkExp = ({
                 ))}
                 {
                     formData2.createExp.map((exp1, index) => (
-                        <div key={index}>
+                        <div key={exp1.id}>
                             <label>{`Your Prompt ${index+1}:`}</label>
                             <textarea
                                 name="userPrompt"

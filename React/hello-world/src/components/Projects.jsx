@@ -2,7 +2,6 @@ import React from 'react';
 import '../form.css';
 
 const Projects = ({ formData1, formData2, handleProjectChange, handleAddProject, handleRemoveProject, handleAddCreateProject, handleRemoveCreateProject, handleCreateProjectChange }) => {
-    console.log(formData2)
     return (
         <>
             <div className="projects">
@@ -11,7 +10,7 @@ const Projects = ({ formData1, formData2, handleProjectChange, handleAddProject,
                 </h2>
                 {formData1.projects.map((project, index) => (
                     <>
-                        <div key={index}>
+                        <div key={project.id}>
                             {index > 0 && <div className="project-space" />}
                             <h3 className="project-heading">Project /Extra-curricular activity {index + 1}</h3>
                             <label>Project Title / Extra-curricular Activity Title:</label>
@@ -65,7 +64,7 @@ const Projects = ({ formData1, formData2, handleProjectChange, handleAddProject,
                 ))}
                 {
                     formData2.createProject.map((project1, index) => (
-                        <>
+                        <div key={project1.id}>
                             <label>{`Your Prompt ${index+1}:`}</label>
                             <textarea
                                 name="userPrompt"
@@ -73,11 +72,10 @@ const Projects = ({ formData1, formData2, handleProjectChange, handleAddProject,
                                 onChange={(event) => handleCreateProjectChange(index, event)}
                             ></textarea>
                             <button className='remove-buttons' onClick={() => handleRemoveCreateProject(index)}>Delete Created Project</button>
-                        </>
+                        </div>
                     ))
                 }
-
-
+                
                 <div className="add-project">
                     <button type='button' className='add-buttons' onClick={handleAddProject}>
                         Add Project

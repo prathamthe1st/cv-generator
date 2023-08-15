@@ -19,7 +19,8 @@ const CV = ({ result }) => {
         console.log(result.workExperiences)
         console.log(result.educations)
         console.log(result.projects)
-        console.log(result.otherInfo.skills)
+        console.log(result.createExp)
+        console.log(result.createProject)
     })
 
     function generateDocx() {
