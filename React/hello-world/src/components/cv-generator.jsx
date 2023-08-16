@@ -57,7 +57,9 @@
                   arr.push(
                     this.createInstitutionHeader(
                       education.universityName,
-                      `${education.startDate} - ${education.endDate}`,
+                      new Date(education.startDate), 
+                      new Date(education.endDate),   
+                      // `${education.startDate} - ${education.endDate}`,
                       `${education.city}, ${education.country}`
                     )
                   );
@@ -87,7 +89,9 @@
                   arr.push(
                     this.createInstitutionHeader(
                       position.companyName,
-                      `${position.startDate} - ${position.endDate}`,
+                      new Date(position.startDate), 
+                      new Date(position.endDate), 
+                      // `${position.startDate} - ${position.endDate}`,
                       `${position.city}, ${position.country}`
                       
                     )
@@ -116,9 +120,9 @@
                 .map(project => {
                   const arr = [];
                   arr.push(
-                    this.createInstitutionHeader(
+                    this.createProjectHeader(
                       project.title,
-                      project.date,
+                      new Date(project.date), 
                       `${project.city}, ${project.country}`
                     )
                   );
@@ -142,10 +146,8 @@
                 }),
               
 
-                this.createHeading("Skills and Languages"),
-                this.createSubHeading("Skills"),
+                this.createHeading("Other Information"),
                 this.createSkillList(otherInfo.skills),
-                this.createSubHeading("Languages"),
                 this.createLanguageList(otherInfo.languages),
 
             ]
@@ -190,7 +192,10 @@
       });
     }
 
-    createInstitutionHeader(institutionName, dateText, location) {
+    createInstitutionHeader(institutionName, startDate,endDate, location) {
+
+      const startMonthYear = this.getMonthFromInt(startDate.getMonth() + 1) + " " + startDate.getFullYear();
+  const endMonthYear = this.getMonthFromInt(endDate.getMonth() + 1) + " " + endDate.getFullYear();
       
       return new Paragraph({
         tabStops: [
@@ -210,7 +215,7 @@
             size:22
           }),
           new TextRun({
-            text: `\t${dateText}`,
+            text: `\t${startMonthYear} - ${endMonthYear}`,
             bold: true,
             size:22
           })
@@ -227,6 +232,34 @@
             size:22
           })
         ]
+      });
+    }
+
+
+    createProjectHeader(title, date, location) {
+      return new Paragraph({
+        tabStops: [
+          {
+            type: TabStopType.RIGHT,
+            position: TabStopPosition.MAX,
+          },
+        ],
+        children: [
+          new TextRun({
+            text: title,
+            bold: true,
+            size: 24,
+          }),
+          new TextRun({
+            text: `, ${location}`,
+            size: 22,
+          }),
+          new TextRun({
+            text: `\t${this.getMonthFromInt(date.getMonth() + 1)} ${date.getFullYear()}`, // Format date as "Month Year"
+            bold: true,
+            size: 22,
+          }),
+        ],
       });
     }
 
@@ -271,16 +304,51 @@
     }
 
 
-    createSkillList(skills) {
-      return new Paragraph({
-        children: [new TextRun(skills)]
-      });
+    // createSkillList(skills) {
+    //   return new Paragraph({
+    //     children: [new TextRun(skills)]
+    //   });
 
+    // }
+
+    createSkillList(skills) {
+      const skillArray = skills.split(",").map(skill => skill.trim());
+      const skillText = skillArray.join(", ");
+      return new Paragraph({
+        children: [
+          new TextRun({
+            text: "Skills: ",
+            bold: true,
+            size: 24,
+          }),
+          new TextRun({
+            text: skillText,
+          }),
+        ],
+      });
     }
+  
+
+    // createLanguageList(languages) {
+    //   return new Paragraph({
+    //     children: [new TextRun(languages)]
+    //   });
+    // }
 
     createLanguageList(languages) {
+      const languageArray = languages.split(",").map(language => language.trim());
+      const languageText = languageArray.join(", ");
       return new Paragraph({
-        children: [new TextRun(languages)]
+        children: [
+          new TextRun({
+            text: "Languages: ",
+            bold: true,
+            size: 24,
+          }),
+          new TextRun({
+            text: languageText,
+          }),
+        ],
       });
     }
 
