@@ -4,7 +4,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import logo from '../../assets/logo.png'
 import { Packer } from "docx";
-import DocumentCreator from "../cv-generator"; 
+import DocumentCreator from "../cv-generator";
 import { useNavigate } from 'react-router-dom';
 
 
@@ -12,7 +12,7 @@ const CV = ({ result }) => {
     const navigate = useNavigate();
     const navigateHome = () => {
         navigate('/');
-      };
+    };
     useEffect(() => {
         console.log(result)
         console.log(result.personalInfo)
@@ -25,7 +25,16 @@ const CV = ({ result }) => {
 
     function generateDocx() {
         const documentCreator = new DocumentCreator();
-        toast("Download started")
+        toast.success('Download Started', {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "dark",
+        });
         const doc = documentCreator.create([
             result.personalInfo,
             result.workExperiences,
@@ -34,12 +43,6 @@ const CV = ({ result }) => {
             result.otherInfo
         ]);
 
-        // Packer.toBlob(doc).then(blob => {
-        //     console.log(blob);
-        //     saveAs(blob, "example.docx");
-        //     console.log("Document created successfully");
-        // });
-
         Packer.toBlob(doc).then(blob => {
             const downloadLink = document.createElement("a");
             downloadLink.href = URL.createObjectURL(blob);
@@ -47,10 +50,10 @@ const CV = ({ result }) => {
             document.body.appendChild(downloadLink);
             downloadLink.click();
             document.body.removeChild(downloadLink);
-
             console.log("Document created and downloaded successfully");
         });
     }
+
     return (
         <>
             <div className='result'>
@@ -63,9 +66,20 @@ const CV = ({ result }) => {
                     </p>
                 </div>
                 <div className='download'>
-                    <button  onClick={generateDocx}>Download Resume</button>
-                    <ToastContainer/>
-                    <button onClick={navigateHome}>Create again</button>
+                    <button className="btn" onClick={generateDocx}>Download Resume</button>
+                    <ToastContainer
+                        position="top-right"
+                        autoClose={5000}
+                        hideProgressBar={false}
+                        newestOnTop={false}
+                        closeOnClick
+                        rtl={false}
+                        pauseOnFocusLoss
+                        draggable
+                        pauseOnHover
+                        theme="dark"
+                    />
+                    <button className='btn' onClick={navigateHome}>Create again</button>
                 </div>
             </div>
         </>

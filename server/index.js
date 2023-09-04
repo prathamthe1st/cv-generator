@@ -7,6 +7,8 @@ const cors = require("cors");
 const app = express();
 const PORT = 4000;
 
+
+
 app.use(express.urlencoded({ extended: true }));
 app.use("/uploads", express.static("uploads"));
 app.use(express.json());
@@ -62,7 +64,7 @@ const WorkGPTFunction = async (text) => {
 		model: "text-davinci-003",
 		prompt: text,
 		temperature: 0.5,
-		max_tokens: 160,
+		max_tokens: 100,
 		top_p: 1,
 		frequency_penalty: 1,
 		presence_penalty: 1,
@@ -74,7 +76,7 @@ const ProjectGPTFunction = async (text) => {
 		model: "text-davinci-003",
 		prompt: text,
 		temperature: 0.5,
-		max_tokens: 120,
+		max_tokens: 70,
 		top_p: 1,
 		frequency_penalty: 1,
 		presence_penalty: 1,
@@ -116,16 +118,18 @@ app.post("/cv", async (req, res) => {
 		console.log("Work Ex is Running")
 		for (let i = 0; i < workExperiences.length; i++) {
 
-			let work_prompt1 = `I am writing a resume. I worked as a ${workExperiences[i].titlePositionHeld} at ${workExperiences[i].companyName}.${workExperiences[i].description}. I want you to act as a CV writing expert with immense industrial knowledge and provide 4 impactful points for the description of my role while following the instructions below:\n 
+			let work_prompt1 = `I am writing a resume. I worked as a ${workExperiences[i].titlePositionHeld} at ${workExperiences[i].companyName}.${workExperiences[i].description}. I want you to act as a CV writing expert with immense industrial knowledge and provide 3 impactful points for the description of my role while following the instructions below:\n 
 			1. Quantify the experience wherever possible. \n
 			2. Go in-depth in the responsibilities and show a strong skillset and domain knowledge \n
 			3. Make the overall experience more impactful by using relevant names of tools, frameworks, processes, etc. \n
-			4. Use a maximum number of action words.`
+			4. Use a maximum number of action words.
+			5. Make sure all points are concise and to the point.
+			6. All the points need to have only one sentence each.`
 
 			let work_response1 = await WorkGPTFunction(work_prompt1);
 			console.log(`Work Experience ${i + 1} Response 1 from Model: `, work_response1)
 
-			let work_prompt2 = `${work_response1}\n\n Enhance these 4 points but dont increase the word count.`
+			let work_prompt2 = `${work_response1}\n\n Enhance these 3 points but dont increase the word count.`
 			let work_response2 = await WorkGPTFunction(work_prompt2);
 
 			console.log(`Work Experience ${i + 1} Response 2 from Model: `, work_response2)
@@ -142,7 +146,10 @@ app.post("/cv", async (req, res) => {
 			1. Quantify the project wherever possible. \n
 			2. Use more action keywords\n
 			3. Make a mention of any relevant tools and frameworks if necessary.\n
-			4. Add the impactful points at the start itself and highlight specific skills.`
+			4. Add the impactful points at the start itself and highlight specific skills.
+			5. Make sure all points are concise and to the point.
+			6. All the points need to have only one sentence each.`
+
 
 			let project_response1 = await ProjectGPTFunction(project_prompt1)
 			console.log(`Project ${i + 1} Response 1 from Model: `, project_response1)
@@ -158,15 +165,14 @@ app.post("/cv", async (req, res) => {
 	const createWorkExperience = async () => {
 		// const userWorkPrompt = "Create a work experience for me. I work at Google as a Business Analyst"
 		for (let i = 0; i < createExp.length; i++) {
-			let final_work_prompt = `I want a work description of 4 points in my CV. Use the data below to make one for me.
-			\n${createExp[i].userPrompt}\n.
-			Also add a Job Title and Company name of your choice.`
+			let final_work_prompt = `I want a work description of 3 points in my CV. Use the data below to make one for me.
+			\n${createExp[i].userPrompt}`
 			const create_work_response1 = await WorkGPTFunction(final_work_prompt);
 
 			console.log(`Created Work Experience ${i+1} Response 1 from Model: `, create_work_response1)
 
-			let work_prompt1 = `${create_work_response1}\n\nAlso add a Job Title and Company name of your choice.\nI want you to act as a CV writing expert with immense industrial knowledge \
-			and enhance the 4 points while following the instructions below:
+			let work_prompt1 = `${create_work_response1}\n\nI want you to act as a CV writing expert with immense industrial knowledge
+			and enhance the 3 points while following the instructions below:
 				1. Go in-depth in the responsibilities and show a strong skillset and domain knowledge\n 
 				2. Make the overall experience more impactful by using relevant names of tools, frameworks, processes, etc.n\n
 				3. Use a maximum number of action words.`
@@ -176,19 +182,19 @@ app.post("/cv", async (req, res) => {
 			console.log(`Create Work Experience ${i+1} Response 2 from Model: `, create_work_response2)
 
 			// let work_prompt2 = `${create_work_response2} I can see that you have still not implemented all the instructions. Please go over your response again and give me the best possible output making sure none of my instructions were missed. `
-			let work_prompt2 = `${create_work_response2}.\n Add a Job Title and Company name of your choice.\n Convert the data into 4 numbered points.\n
+			let work_prompt2 = `${create_work_response2}.\n Convert the data into 3 numbered points.\n
 `
 			let create_work_response3 = await WorkGPTFunction(work_prompt2);
 
 			console.log(`Create Work Experience ${i+1} Response 3 from Model: `, create_work_response3)
 			workExperiences.push({
 				id: generateID(),
-				companyName: "",
-				city: "",
-				country: "",
-				startDate: "",
-				endDate: "",
-				titlePositionHeld: "",
+				companyName: "<Company Name>",
+				city: "<City>",
+				country: "<Country>",
+				startDate: "15-08-2020",
+				endDate: "15-08-2021",
+				titlePositionHeld: "<Job Title>",
 				workDescription: create_work_response3,
 			})
 		}
@@ -198,13 +204,12 @@ app.post("/cv", async (req, res) => {
 		// const userProjectPrompt = "Create a project for me. I made a project on Machine Learning"
 		for (let i = 0; i < createProject.length; i++) {
 			let final_project_prompt = `I want a project description of 2 points in my CV. Use the data below to make one for me.
-			${createProject[i].userPrompt}.
-			Add a Project Title of your choice for this data.`
+			${createProject[i].userPrompt}`
 			const create_project_response1 = await ProjectGPTFunction(final_project_prompt);
 
 			console.log(`Created Project ${i+1} Response 1 from Model: `, create_project_response1)
 
-			let create_project_prompt1 = `${create_project_response1}\n\nAdd a Project Title of your choice for this data.
+			let create_project_prompt1 = `${create_project_response1}
 			Please act as a CV writing expert with immense industrial knowledge to personalize the 2 points while following the instructions below: \n\n
 			1. Use more action keywords\n
 			2. Add the impactful points at the start itself and highlight specific skills. \n
@@ -218,14 +223,13 @@ app.post("/cv", async (req, res) => {
 			console.log(`Created Project ${i+1} Response 3 from Model: `, create_project_response3)
 
 
-
 			projects.push({
 				id: generateID(),
-				title: "",
-				position: "",
-				date: "",
-				city: "",
-				country: "",
+				title: "<Project Title>",
+				position: "<Position>",
+				date: "15-08-2020",
+				city: "<City>",
+				country: "<Country>",
 				description: create_project_response3,
 			})
 		}
