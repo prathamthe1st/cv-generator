@@ -206,7 +206,7 @@ const MainForm = ({ setResult }) => {
             createProject
         };
         axios
-            .post("http://localhost:4000/cv", data, {})
+            .post("http://13.232.24.76:4000/cv", data, {})
             .then((res) => {
                 if (res.data.message) {
                     setResult(res.data.data);
